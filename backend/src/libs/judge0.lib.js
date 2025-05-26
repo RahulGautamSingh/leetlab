@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export const getJudge0LangugeId = (language) => {
   const languageMap = {
     PYTHON: 71,
@@ -28,7 +30,7 @@ export const pollBatchResults = async (tokens) => {
       {
         params: {
           tokens: tokens.join(","),
-          base64_encoded: fasle,
+          base64_encoded: false,
         },
       }
     );
@@ -36,7 +38,7 @@ export const pollBatchResults = async (tokens) => {
     const results = data.submissions;
 
     const isAllDone = results.every(
-      (submission) => submission.id !== 1 && submission.id !== 2
+      (submission) => submission.status.id !== 1 && submission.status.id !== 2
     );
 
     if (isAllDone) {
