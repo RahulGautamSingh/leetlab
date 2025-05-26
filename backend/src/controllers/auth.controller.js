@@ -121,7 +121,7 @@ export const logout = async(req, res) => {
             secure: process.env.NODE_ENV !== "development",
         });
 
-        res.status(204).json({
+        res.status(200).json({
             message: "Logout successful",
             success: true,
         });
@@ -132,5 +132,3 @@ export const logout = async(req, res) => {
         });
     }
 };
-
-export const getProfile = async(req, res) => {};
