@@ -1,0 +1,48 @@
+export const getJudge0LangugeId = (language) => {
+  const languageMap = {
+    PYTHON: 71,
+    JAVASCRIPT: 63,
+    JAVA: 52,
+  };
+
+  return languageMap[language.toUpperCase()];
+};
+
+export const submitBatch = async (submissions) => {
+  const { data } = await axios.post(
+    `${process.env.JUDGE0_API_URL}/submissions/batch?base64_encoded=false`,
+    { submissions }
+  );
+
+  console.log("Submissions Results: ", data);
+
+  return data;
+};
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+export const pollBatchResults = async (tokens) => {
+  while (true) {
+    const { data } = await axios.get(
+      `${process.env.JUDGE0_API_URL}/submissions/batch`,
+      {
+        params: {
+          tokens: tokens.join(","),
+          base64_encoded: fasle,
+        },
+      }
+    );
+
+    const results = data.submissions;
+
+    const isAllDone = results.every(
+      (submission) => submission.id !== 1 && submission.id !== 2
+    );
+
+    if (isAllDone) {
+      return results;
+    }
+
+    await sleep(2000);
+  }
+};
