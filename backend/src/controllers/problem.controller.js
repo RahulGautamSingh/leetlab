@@ -5,6 +5,7 @@ import {
   pollBatchResults,
   submitBatch,
 } from "../libs/judge0.lib.js";
+import { isCancel } from "axios";
 
 export const createProblem = async (req, res) => {
   try {
@@ -246,4 +247,36 @@ export const deleteProblem = async (req, res) => {
   }
 };
 
-export const getSolvedProblems = async (req, res) => {};
+export const getSolvedProblems = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const problems =
+      (await db.problem.findMany({
+        where: {
+          solvedBy: {
+            some: {
+              userId,
+            },
+          },
+        },
+        include: {
+          solvedBy: {
+            some: {
+              userId,
+            },
+          },
+        },
+      })) || [];
+
+    res.status(200).json({
+      messaage: "Fetched solved problems succesfully",
+      success: true,
+      problems,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      error: "Error while fetching solved problem",
+    });
+  }
+};
