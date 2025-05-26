@@ -1,11 +1,19 @@
 {
-  "name": "backend",
-  "version": "1.0.0",
-  "description": "\"Backend for leetlab\"",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "RahulGautamSingh <rahultesnik@gmail.com>",
-  "license": "ISC"
+    "name": "backend",
+    "version": "1.0.0",
+    "description": "\"Backend for leetlab\"",
+    "main": "src/index.js",
+    "scripts": {
+        "dev": "nodemon src/index.js"
+    },
+    "author": "RahulGautamSingh <rahultesnik@gmail.com>",
+    "license": "ISC",
+    "type": "module",
+    "dependencies": {
+        "@prisma/client": "^6.8.2",
+        "dotenv": "^16.5.0",
+        "express": "^5.1.0",
+        "nodemon": "^3.1.10",
+        "prisma": "^6.8.2"
+    }
 }
