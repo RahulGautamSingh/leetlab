@@ -9,6 +9,7 @@ import { Loader } from "lucide-react";
 import Layout from "./layout/Layout";
 import AddProblem from "./pages/AddProblem";
 import AdminRoute from "./components/AdminRoute";
+import ProblemPage from "./pages/ProblemPage";
 
 export default function App() {
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
@@ -42,6 +43,10 @@ export default function App() {
           <Route
             path="/signup"
             element={!authUser ? <SignupPage /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/problem/:id"
+            element={!authUser ? <SignupPage /> : <ProblemPage />}
           />
 
           <Route element={<AdminRoute />}>
