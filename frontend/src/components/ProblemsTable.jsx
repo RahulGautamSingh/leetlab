@@ -1,19 +1,26 @@
 import React, { useMemo, useState } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import { Link } from "react-router-dom";
-import { Bookmark, PencilIcon, Plus, TrashIcon } from "lucide-react";
-import { useProblemStore } from "../store/useProblemStore";
+import { Bookmark, Loader2, PencilIcon, Plus, TrashIcon } from "lucide-react";
+import { useActionStore } from "../store/useAction";
+import { usePlaylistStore } from "../store/usePlaylistStore";
+import CreatePlaylistModal from "./CreatePlaylistModal";
+import AddToPlaylistModal from "./AddToPlaylist";
 
 export default function ProblemsTable({ problems }) {
   console.log(problems);
   const { authUser } = useAuthStore();
-  const { deleteProblem } = useProblemStore();
+  const { isDeletingProblem, deleteProblem } = useActionStore();
+  const { createPlaylist } = usePlaylistStore();
 
   const [search, setSearch] = useState("");
   const [difficulty, setDifficulty] = useState("ALL");
   const [selectedTag, setSelectedTag] = useState("ALL");
   const [currentPage, setCurrentPage] = useState(1);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(1);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isAddToPlaylistModalOpen, setIsAddToPlaylistModalOpen] =
+    useState(false);
+  const [selectedProblemId, setSelectedProblemId] = useState(null);
 
   const allTags = useMemo(() => {
     if (!Array.isArray(problems)) return [];
@@ -42,13 +49,17 @@ export default function ProblemsTable({ problems }) {
   }, [problems, search, difficulty, selectedTag]);
 
   const handleDelete = async (id) => {
-    try {
-      deleteProblem(id);
-    } catch (error) {
-      // already logged
-    }
+    deleteProblem(id);
   };
-  const handleAddToPlaylist = async (id) => {};
+
+  const handleAddToPlaylist = (problemId) => {
+    setSelectedProblemId(problemId);
+    setIsAddToPlaylistModalOpen(true);
+  };
+
+  const handleCreatePlaylist = async (data) => {
+    await createPlaylist(data);
+  };
 
   const itemsPerPage = 5;
   const totalPages = Math.ceil(filteredProblems.length / itemsPerPage);
@@ -175,7 +186,11 @@ export default function ProblemsTable({ problems }) {
                               onClick={() => handleDelete(problem.id)}
                               className="btn btn-sm btn-error"
                             >
-                              <TrashIcon className="w-4 h-4 text-white" />
+                              {isDeletingProblem ? (
+                                <Loader2 className="animate-spin" />
+                              ) : (
+                                <TrashIcon className="w-4 h-4 text-white" />
+                              )}
                             </button>
                             <button disabled className="btn btn-sm btn-warning">
                               <PencilIcon className="w-4 h-4 text-white" />
@@ -227,6 +242,18 @@ export default function ProblemsTable({ problems }) {
           Next
         </button>
       </div>
+
+      <CreatePlaylistModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSubmit={handleCreatePlaylist}
+      />
+
+      <AddToPlaylistModal
+        isOpen={isAddToPlaylistModalOpen}
+        onClose={() => setIsAddToPlaylistModalOpen(false)}
+        problemId={selectedProblemId}
+      />
     </div>
   );
 }
