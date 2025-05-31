@@ -76,8 +76,11 @@ export const addProblemToPlaylist = async (req, res) => {
       });
     }
 
-    const problemsInPlaylist = await db.problemsInPlaylist.createMany({
-      data: problemIds.map((problemId) => ({ playlistId, problemId })),
+    const problemsInPlaylist = await db.problemInPlaylist.createMany({
+      data: problemIds.map((problemId) => ({
+        playlistId,
+        problemId,
+      })),
     });
 
     res.status(201).json({
