@@ -40,8 +40,4 @@ export const useProblemStore = create((set) => ({
       set({ isProblemLoading: false });
     }
   },
-
-  deleteProblem: async () => {
-    // TODO: Implement
-  },
 }));
