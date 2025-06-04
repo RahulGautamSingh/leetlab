@@ -55,7 +55,7 @@ export const checkAdmin = async (req, res, next) => {
       select: { role: true },
     });
 
-    if (!user || user.role !== "ADMIIN") {
+    if (!user || user.role !== "ADMIN") {
       return res.status(403).json({
         error: "Access Denied",
       });

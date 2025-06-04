@@ -180,7 +180,7 @@ export default function ProblemsTable({ problems }) {
                     </td>
                     <td>
                       <div className="flex flex-col md:flex-row gap-2 items-start md:items-center">
-                        {authUser?.role === "ADMIIN" && (
+                        {authUser?.role === "ADMIN" && (
                           <div className="flex gap-2">
                             <button
                               onClick={() => handleDelete(problem.id)}

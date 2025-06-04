@@ -14,7 +14,7 @@ export default function AdminRoute() {
     );
   }
 
-  if (!authUser || authUser.role !== "ADMIIN") {
+  if (!authUser || authUser.role !== "ADMIN") {
     return <Navigate to="/" />;
   }
 

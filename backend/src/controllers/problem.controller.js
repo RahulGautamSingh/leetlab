@@ -20,7 +20,7 @@ export const createProblem = async (req, res) => {
       referenceSolutions,
     } = req.body;
 
-    if (req.user.role !== "ADMIIN") {
+    if (req.user.role !== "ADMIN") {
       return res.status(403).json({
         error: "Access Denied",
       });
@@ -140,7 +140,7 @@ export const getProblemById = async (req, res) => {
 
 export const updateProblem = async (req, res) => {
   try {
-    if (req.user.role !== "ADMIIN") {
+    if (req.user.role !== "ADMIN") {
       return res.status(403).json({
         error: "Access Denied",
       });
@@ -226,7 +226,7 @@ export const updateProblem = async (req, res) => {
 
 export const deleteProblem = async (req, res) => {
   try {
-    if (req.user.role !== "ADMIIN") {
+    if (req.user.role !== "ADMIN") {
       return res.status(403).json({
         error: "Access Denied",
       });

@@ -59,7 +59,7 @@ const Navbar = () => {
                   My Profile
                 </Link>
               </li>
-              {authUser?.role === "ADMIIN" && (
+              {authUser?.role === "ADMIN" && (
                 <li>
                   <Link
                     to="/add-problem"
