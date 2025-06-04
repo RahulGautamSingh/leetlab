@@ -8,7 +8,9 @@ export const useActionStore = create((set) => ({
   deleteProblem: async (id) => {
     set({ isDeletingProblem: true });
     try {
-      const res = await axiosInstance.delete(`/problem/delete-problem/${id}`);
+      const res = await axiosInstance.delete(
+        `/api/problem/delete-problem/${id}`
+      );
       toast.success(res.data.message);
     } catch (error) {
       console.error("Error deleting problem", error);

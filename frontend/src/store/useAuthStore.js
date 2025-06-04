@@ -11,7 +11,7 @@ export const useAuthStore = create((set) => ({
   checkAuth: async () => {
     set({ isCheckingAuth: true });
     try {
-      const res = await axiosInstance.get("/auth/me");
+      const res = await axiosInstance.get("/api/auth/me");
       console.log("Check auth response: ", res.data);
       toast.success("User authentication successful!");
       set({ authUser: res.data.user });
@@ -27,7 +27,7 @@ export const useAuthStore = create((set) => ({
   signup: async (data) => {
     set({ isSigninUp: true });
     try {
-      const res = await axiosInstance.post("/auth/register", data);
+      const res = await axiosInstance.post("/api/auth/register", data);
       console.log("Signup response: ", res.data);
       toast.success("Signed up successfully!");
       set({ authUser: res.data.user });
@@ -43,7 +43,7 @@ export const useAuthStore = create((set) => ({
   login: async (data) => {
     set({ isLoggingIn: true });
     try {
-      const res = await axiosInstance.post("/auth/login", data);
+      const res = await axiosInstance.post("/api/auth/login", data);
       console.log("Sign in response: ", res.data);
 
       toast.success("Logged In sucessfully!");
@@ -59,7 +59,7 @@ export const useAuthStore = create((set) => ({
 
   logout: async () => {
     try {
-      const res = await axiosInstance.post("/auth/logout");
+      const res = await axiosInstance.post("/api/auth/logout");
       console.log("Logging out response: ", res.data);
 
       toast.success("Logged out successfully!");

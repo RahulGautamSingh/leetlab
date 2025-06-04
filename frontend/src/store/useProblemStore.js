@@ -11,7 +11,7 @@ export const useProblemStore = create((set) => ({
   getAllProblems: async () => {
     set({ isProblemsLoading: true });
     try {
-      const res = await axiosInstance.get("/problem/get-all-problems");
+      const res = await axiosInstance.get("/api/problem/get-all-problems");
       set({ problems: res.data.problems });
     } catch (error) {
       console.error("Error while fetching problems: ", error);
@@ -22,7 +22,7 @@ export const useProblemStore = create((set) => ({
 
   getSolvedProblems: async () => {
     try {
-      const res = await axiosInstance.get("/problem/get-solved-problems");
+      const res = await axiosInstance.get("/api/problem/get-solved-problems");
       set({ solvedProblems: res.data.problems });
     } catch (error) {
       console.error("Error while fetching solved problems: ", error);
@@ -32,7 +32,7 @@ export const useProblemStore = create((set) => ({
   getProblemById: async (id) => {
     set({ isProblemLoading: true });
     try {
-      const res = await axiosInstance.get(`/problem/get-problem/${id}`);
+      const res = await axiosInstance.get(`/api/problem/get-problem/${id}`);
       set({ problem: res.data.problem });
     } catch (error) {
       console.error("Error while fetching problems " + id, error);
