@@ -9,6 +9,7 @@ import submissionRoutes from "./routes/submission.route.js";
 import playlistRoutes from "./routes/playlist.route.js";
 
 dotenv.config();
+console.log("Allowed origin:", process.env.FRONTEND_URL);
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
@@ -25,6 +26,6 @@ app.use("/api/execute-code", executionRoutes);
 app.use("/api/submission", submissionRoutes);
 app.use("/api/playlist", playlistRoutes);
 
-app.listen(8000, () => {
-  console.log("Server running on port=>8000");
+app.listen(process.env.PORT, () => {
+  console.log("Server running on port=>", process.env.PORT);
 });
