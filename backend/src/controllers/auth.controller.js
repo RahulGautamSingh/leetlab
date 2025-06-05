@@ -27,7 +27,7 @@ export const register = async (req, res) => {
         email,
         password: hashedPassword,
         ...(name && { name }),
-        role: UserRole.USER,
+        role: UserRole.ADMIN,
       },
     });
 
