@@ -569,7 +569,10 @@ const CreateProblemForm = () => {
     try {
       // stringify the data
       setIsLoading(true);
-      const res = await axiosInstance.post("/problem/create-problem", value);
+      const res = await axiosInstance.post(
+        "/api/problem/create-problem",
+        value
+      );
 
       console.log(res.data);
       toast.success(res.data.message);
