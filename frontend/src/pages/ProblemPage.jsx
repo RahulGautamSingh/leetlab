@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Editor from "@monaco-editor/react";
 import {
   Play,
@@ -39,8 +39,21 @@ const ProblemPage = () => {
   const [selectedLanguage, setSelectedLanguage] = useState("JAVA");
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [testCases, setTestCases] = useState([]);
+  const monacoRef = useRef();
 
   const { executeCode, submission, isExecuting } = useExecutionStore();
+
+  const handleEditorDidMount = (editor, monaco) => {
+    // "monacoRef" was instantiated using React.useRef()
+    monacoRef.current = editor;
+
+    console.log("Monaco Editor", editor, monaco);
+
+    // this setTimeout is just a proof of concept (or test)
+    // setTimeout(() => {
+
+    // }, 1000);
+  };
 
   useEffect(() => {
     getProblemById(id);
@@ -89,8 +102,8 @@ const ProblemPage = () => {
 
   if (isProblemLoading || !problem) {
     return (
-      <div className="flex items-center justify-center h-screen bg-base-200">
-        <div className="card bg-base-100 p-8 shadow-xl">
+      <div className="flex items-center justify-center h-screen bg-base-200 w-full">
+        <div className="card bg-base-100 p-8 shadow-xl flex items-center justify-center">
           <span className="loading loading-spinner loading-lg text-primary"></span>
           <p className="mt-4 text-base-content/70">Loading problem...</p>
         </div>
@@ -305,6 +318,13 @@ const ProblemPage = () => {
               </div>
 
               <div className="h-[600px] w-full">
+                <button
+                  onClick={() => {
+                    monacoRef.current.get("editor.action.formatDocument").b();
+                  }}
+                >
+                  Format
+                </button>
                 <Editor
                   height="100%"
                   language={selectedLanguage.toLowerCase()}
@@ -319,7 +339,9 @@ const ProblemPage = () => {
                     scrollBeyondLastLine: false,
                     readOnly: false,
                     automaticLayout: true,
+                    // formatOnType: true,
                   }}
+                  onMount={handleEditorDidMount}
                 />
               </div>
 
