@@ -10,6 +10,7 @@ import Layout from "./layout/Layout";
 import AddProblem from "./pages/AddProblem";
 import AdminRoute from "./components/AdminRoute";
 import ProblemPage from "./pages/ProblemPage";
+import ProfilePage from "./pages/ProfilePage";
 
 export default function App() {
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
@@ -47,6 +48,10 @@ export default function App() {
           <Route
             path="/problem/:id"
             element={!authUser ? <SignupPage /> : <ProblemPage />}
+          />
+          <Route
+            path="/profile"
+            element={!authUser ? <SignupPage /> : <ProfilePage />}
           />
 
           <Route element={<AdminRoute />}>
