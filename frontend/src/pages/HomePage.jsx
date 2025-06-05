@@ -10,14 +10,6 @@ export default function HomePage() {
     getAllProblems();
   }, []);
 
-  if (isProblemsLoading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <Loader className="size-10 animate-spin" />
-      </div>
-    );
-  }
-
   return (
     <section className="min-h-screen flex flex-col items-center mt-14 px-4">
       <div className="absolute top-16 left-0 w-1/3 h-1/3 bg-primary opacity-30 blur-3xl rounded-md bottom-9"></div>
@@ -29,6 +21,12 @@ export default function HomePage() {
         interviews and helps you to improve your coding skills by solving coding
         problems
       </p>
+
+      {isProblemsLoading && (
+        <div className="flex items-center justify-center h-screen w-full">
+          <Loader className="size-10 animate-spin" />
+        </div>
+      )}
 
       {problems?.length > 0 ? (
         <ProblemsTable problems={problems} />
