@@ -10,6 +10,7 @@ import playlistRoutes from "./routes/playlist.route.js";
 
 dotenv.config();
 console.log("Allowed origin:", process.env.FRONTEND_URL);
+console.log("PORT:", process.env.PORT);
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
