@@ -32,4 +32,8 @@ export const useExecutionStore = create((set) => ({
       set({ isExecuting: false });
     }
   },
+
+  setSubmission: (submission) => {
+    set({ submission: submission });
+  },
 }));
