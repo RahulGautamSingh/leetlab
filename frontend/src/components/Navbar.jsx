@@ -12,7 +12,7 @@ const Navbar = () => {
       <div className="flex-1">
         <Link to="/" className="flex items-center gap-3 cursor-pointer">
           <img
-            src="/vite.svg"
+            src="/logo.svg"
             className="h-12 w-12 bg-primary/20 text-primary border-none px-2 py-2 rounded-full"
           />
           <span className="text-lg md:text-2xl font-bold tracking-tight  hidden md:block">
