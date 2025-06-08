@@ -4,7 +4,13 @@ export const getAllSubmissions = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const submissions = await db.submission.findMany({ where: { userId } });
+    const submissions = await db.submission.findMany({
+      where: { userId },
+      include: {
+        problem: true,
+        testCases: true,
+      },
+    });
 
     res.status(200).json({
       message: "Fetched all submissions successfully",

@@ -267,11 +267,7 @@ export const getSolvedProblems = async (req, res) => {
           },
         },
         include: {
-          solvedBy: {
-            some: {
-              userId,
-            },
-          },
+          solvedBy: true,
         },
       })) || [];
 
