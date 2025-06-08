@@ -55,7 +55,7 @@ export default function SignupPage() {
 
           {/* Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {/* name */}
+            {/* Name */}
             <div className="form-control">
               <label className="label">
                 <span className="label-text font-medium">Name</span>

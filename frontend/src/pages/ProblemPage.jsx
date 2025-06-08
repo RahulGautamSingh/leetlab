@@ -1,20 +1,18 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Editor from "@monaco-editor/react";
 import {
   Play,
   FileText,
   MessageSquare,
   Lightbulb,
-  Bookmark,
-  Share2,
   Clock,
   ChevronRight,
-  BookOpen,
   Terminal,
   Code2,
   Users,
   ThumbsUp,
   Home,
+  Loader2,
 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import { useProblemStore } from "../store/useProblemStore";
@@ -36,34 +34,23 @@ const ProblemPage = () => {
   } = useSubmissionStore();
   const [code, setCode] = useState("");
   const [activeTab, setActiveTab] = useState("description");
-  const [selectedLanguage, setSelectedLanguage] = useState("JAVA");
-  const [isBookmarked, setIsBookmarked] = useState(false);
   const [testCases, setTestCases] = useState([]);
-  const monacoRef = useRef();
-
-  const { executeCode, submission, isExecuting } = useExecutionStore();
-
-  const handleEditorDidMount = (editor, monaco) => {
-    // "monacoRef" was instantiated using React.useRef()
-    monacoRef.current = editor;
-
-    console.log("Monaco Editor", editor, monaco);
-
-    // this setTimeout is just a proof of concept (or test)
-    // setTimeout(() => {
-
-    // }, 1000);
-  };
+  const { executeCode, submission, isExecuting, setSubmission } =
+    useExecutionStore();
+  const [selectedLanguage, setSelectedLanguage] = useState(
+    submission?.language?.toUpperCase() ?? "JAVA"
+  );
 
   useEffect(() => {
     getProblemById(id);
     getSubmissionCountForProblem(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   useEffect(() => {
     if (problem) {
       setCode(
-        problem.codeSnippets?.[selectedLanguage] || submission?.sourceCode || ""
+        submission?.sourceCode || problem.codeSnippets?.[selectedLanguage] || ""
       );
       setTestCases(
         problem.testcases?.map((tc) => ({
@@ -72,17 +59,18 @@ const ProblemPage = () => {
         })) || []
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [problem, selectedLanguage]);
 
   useEffect(() => {
     if (activeTab === "submissions" && id) {
       getSubmissionForProblem(id);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, id]);
 
-  console.log("Submissions:", JSON.stringify(submissions));
-
   const handleLanguageChange = (e) => {
+    setSubmission({ ...submission, sourceCode: undefined });
     const lang = e.target.value;
     setSelectedLanguage(lang);
     setCode(problem.codeSnippets?.[lang] || "");
@@ -118,55 +106,92 @@ const ProblemPage = () => {
           <div className="prose max-w-none">
             <p className="text-lg mb-6">{problem.description}</p>
 
-            {problem.examples && (
-              <>
-                <h3 className="text-xl font-bold mb-4">Examples:</h3>
-                {Object.entries(problem.examples).map(([lang, example]) => (
-                  <div
-                    key={lang}
-                    className="bg-base-200 p-6 rounded-xl mb-6 font-mono"
-                  >
-                    <div className="mb-4">
-                      <div className="text-indigo-300 mb-2 text-base font-semibold">
-                        Input:
-                      </div>
-                      <span className="bg-black/90 px-4 py-1 rounded-lg font-semibold text-white">
-                        {example.input}
-                      </span>
-                    </div>
-                    <div className="mb-4">
-                      <div className="text-indigo-300 mb-2 text-base font-semibold">
-                        Output:
-                      </div>
-                      <span className="bg-black/90 px-4 py-1 rounded-lg font-semibold text-white">
-                        {example.output}
-                      </span>
-                    </div>
-                    {example.explanation && (
-                      <div>
-                        <div className="text-emerald-300 mb-2 text-base font-semibold">
-                          Explanation:
-                        </div>
-                        <p className="text-base-content/70 text-lg font-sem">
-                          {example.explanation}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </>
-            )}
-
             {problem.constraints && (
               <>
                 <h3 className="text-xl font-bold mb-4">Constraints:</h3>
                 <div className="bg-base-200 p-6 rounded-xl mb-6">
-                  <span className="bg-black/90 px-4 py-1 rounded-lg font-semibold text-white text-lg">
-                    {problem.constraints}
-                  </span>
+                  {problem.constraints.split("\n").map((constraint) => (
+                    <span className="bg-black/90 px-4 py-1 rounded-lg font-semibold text-white text-lg">
+                      {constraint}
+                    </span>
+                  ))}
                 </div>
               </>
             )}
+
+            {problem.examples && (
+              <>
+                <h3 className="text-xl font-bold mb-4">Examples:</h3>
+                {Object.entries(problem.examples)
+                  // .filter((p) => p.language === selectedLanguage)
+                  .map(([lang, example]) => {
+                    console.log(lang, selectedLanguage);
+                    return lang === selectedLanguage ? (
+                      <div
+                        key={lang}
+                        className="bg-base-200 p-6 rounded-xl mb-6 font-mono"
+                      >
+                        <div className="mb-4">
+                          <div className="text-indigo-300 mb-2 text-base font-semibold">
+                            Input:
+                          </div>
+                          {example.input.split("\n").map((input) => (
+                            <span className="bg-black/90 px-4 py-1 rounded-lg font-semibold text-white">
+                              {input}
+                            </span>
+                          ))}
+                        </div>
+                        <div className="mb-4">
+                          <div className="text-indigo-300 mb-2 text-base font-semibold">
+                            Output:
+                          </div>
+                          <span className="bg-black/90 px-4 py-1 rounded-lg font-semibold text-white">
+                            {example.output}
+                          </span>
+                        </div>
+                        {example.explanation && (
+                          <div>
+                            <div className="text-emerald-300 mb-2 text-base font-semibold">
+                              Explanation:
+                            </div>
+                            <p className="text-base-content/70 text-lg font-sem">
+                              {example.explanation}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <></>
+                    );
+                  })}
+              </>
+            )}
+
+            <div className="collapse bg-base-100 border border-base-300">
+              <input type="radio" name="my-accordion-1" />
+              <div className="collapse-title font-semibold">Topics</div>
+              <div className="collapse-content text-sm"></div>
+            </div>
+            <div className="collapse bg-base-100 border border-base-300">
+              <input type="radio" name="my-accordion-1" />
+              <div className="collapse-title font-semibold">
+                I forgot my password. What should I do?
+              </div>
+              <div className="collapse-content text-sm">
+                Click on "Forgot Password" on the login page and follow the
+                instructions sent to your email.
+              </div>
+            </div>
+            <div className="collapse bg-base-100 border border-base-300">
+              <input type="radio" name="my-accordion-1" />
+              <div className="collapse-title font-semibold">
+                How do I update my profile information?
+              </div>
+              <div className="collapse-content text-sm">
+                Go to "My Account" settings and select "Edit Profile" to make
+                changes.
+              </div>
+            </div>
           </div>
         );
       case "submissions":
@@ -207,10 +232,6 @@ const ProblemPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-base-300 to-base-200 w-full">
       <nav className="navbar bg-base-100 shadow-lg px-4">
         <div className="flex-1 gap-2">
-          <Link to={"/"} className="flex items-center gap-2 text-primary">
-            <Home className="w-6 h-6" />
-            <ChevronRight className="w-4 h-4" />
-          </Link>
           <div className="mt-2">
             <h1 className="text-xl font-bold">{problem.title}</h1>
             <div className="flex items-center gap-2 text-sm text-base-content/70 mt-5">
@@ -235,18 +256,17 @@ const ProblemPage = () => {
             </div>
           </div>
         </div>
-        <div className="flex-none gap-4">
+        <div className="flex gap-4">
           <button
-            className={`btn btn-ghost btn-circle ${
-              isBookmarked ? "text-primary" : ""
-            }`}
-            onClick={() => setIsBookmarked(!isBookmarked)}
+            className="btn btn-success gap-2"
+            onClick={handleRunCode}
+            disabled={isExecuting}
           >
-            <Bookmark className="w-5 h-5" />
+            {!isExecuting && <Play className="w-4 h-4" />}
+            {!isExecuting && "Run Code"}
+            {isExecuting && <Loader2 className="h-5 w-5 animate-spin" />}
           </button>
-          <button className="btn btn-ghost btn-circle">
-            <Share2 className="w-5 h-5" />
-          </button>
+
           <select
             className="select select-bordered select-primary w-40"
             value={selectedLanguage}
@@ -318,83 +338,60 @@ const ProblemPage = () => {
               </div>
 
               <div className="h-[600px] w-full">
-                <button
-                  onClick={() => {
-                    monacoRef.current.get("editor.action.formatDocument").b();
-                  }}
-                >
-                  Format
-                </button>
                 <Editor
-                  height="100%"
+                  height="80%"
                   language={selectedLanguage.toLowerCase()}
                   theme="vs-dark"
                   value={code}
                   onChange={(value) => setCode(value || "")}
                   options={{
                     minimap: { enabled: false },
-                    fontSize: 22,
+                    fontSize: 16,
                     lineNumbers: "on",
                     roundedSelection: false,
                     scrollBeyondLastLine: false,
                     readOnly: false,
                     automaticLayout: true,
-                    // formatOnType: true,
                   }}
-                  onMount={handleEditorDidMount}
                 />
-              </div>
 
-              <div className="p-4 border-t border-base-300 bg-base-200">
-                <div className="flex justify-between items-center">
-                  <button
-                    className={`btn btn-primary gap-2 ${
-                      isExecuting ? "loading" : ""
-                    }`}
-                    onClick={handleRunCode}
-                    disabled={isExecuting}
-                  >
-                    {!isExecuting && <Play className="w-4 h-4" />}
-                    Run Code
-                  </button>
-                  <button className="btn btn-success gap-2">
-                    Submit Solution
-                  </button>
+                <div className="card bg-base-100 shadow-xl">
+                  <div className="card-body">
+                    {submission ? (
+                      <Submission submission={submission} />
+                    ) : (
+                      <>
+                        <div className="flex items-center justify-between mb-6">
+                          <h3 className="text-xl font-bold">Test Cases</h3>
+                        </div>
+                        <div className="overflow-x-auto">
+                          <table className="table table-zebra w-full">
+                            <thead>
+                              <tr>
+                                <th>Input</th>
+                                <th>Expected Output</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {testCases.map((testCase, index) => (
+                                <tr key={index}>
+                                  <td className="font-mono">
+                                    {testCase.input}
+                                  </td>
+                                  <td className="font-mono">
+                                    {testCase.output}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-
-        <div className="card bg-base-100 shadow-xl mt-6">
-          <div className="card-body">
-            {submission ? (
-              <Submission submission={submission} />
-            ) : (
-              <>
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-bold">Test Cases</h3>
-                </div>
-                <div className="overflow-x-auto">
-                  <table className="table table-zebra w-full">
-                    <thead>
-                      <tr>
-                        <th>Input</th>
-                        <th>Expected Output</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {testCases.map((testCase, index) => (
-                        <tr key={index}>
-                          <td className="font-mono">{testCase.input}</td>
-                          <td className="font-mono">{testCase.output}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </>
-            )}
           </div>
         </div>
       </div>
