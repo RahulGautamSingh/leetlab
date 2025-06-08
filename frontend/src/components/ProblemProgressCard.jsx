@@ -42,7 +42,7 @@ export default function ProblemProgressCard({ solved = 0, total = 3575 }) {
         />
       </svg>
       <div className="mt-10 text-center z-10">
-        <h2 className="text-2xl font-bold text-white">
+        <h2 className="text-2xl font-bold">
           {solved}/{total}
         </h2>
         <p className="text-sm text-gray-400">Solved</p>
