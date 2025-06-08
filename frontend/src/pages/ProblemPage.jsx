@@ -167,7 +167,7 @@ const ProblemPage = () => {
               </>
             )}
 
-            <div className="collapse bg-base-100 border border-base-300">
+            {/* <div className="collapse bg-base-100 border border-base-300">
               <input type="radio" name="my-accordion-1" />
               <div className="collapse-title font-semibold">Topics</div>
               <div className="collapse-content text-sm"></div>
@@ -191,7 +191,7 @@ const ProblemPage = () => {
                 Go to "My Account" settings and select "Edit Profile" to make
                 changes.
               </div>
-            </div>
+            </div> */}
           </div>
         );
       case "submissions":
