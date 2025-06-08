@@ -14,7 +14,7 @@ import {
   Home,
   Loader2,
 } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useProblemStore } from "../store/useProblemStore";
 import { getLanguageId } from "../lib/utils";
 import { useExecutionStore } from "../store/useExecutionStore";
@@ -35,8 +35,7 @@ const ProblemPage = () => {
   const [code, setCode] = useState("");
   const [activeTab, setActiveTab] = useState("description");
   const [testCases, setTestCases] = useState([]);
-  const { executeCode, submission, isExecuting, setSubmission } =
-    useExecutionStore();
+  const { executeCode, submission, isExecuting } = useExecutionStore();
   const [selectedLanguage, setSelectedLanguage] = useState(
     submission?.language?.toUpperCase() ?? "JAVA"
   );
@@ -50,7 +49,7 @@ const ProblemPage = () => {
   useEffect(() => {
     if (problem) {
       setCode(
-        submission?.sourceCode || problem.codeSnippets?.[selectedLanguage] || ""
+        problem.codeSnippets?.[selectedLanguage] || submission?.sourceCode || ""
       );
       setTestCases(
         problem.testcases?.map((tc) => ({
@@ -70,7 +69,6 @@ const ProblemPage = () => {
   }, [activeTab, id]);
 
   const handleLanguageChange = (e) => {
-    setSubmission({ ...submission, sourceCode: undefined });
     const lang = e.target.value;
     setSelectedLanguage(lang);
     setCode(problem.codeSnippets?.[lang] || "");
