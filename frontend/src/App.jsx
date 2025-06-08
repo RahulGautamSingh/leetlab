@@ -17,6 +17,9 @@ export default function App() {
 
   useEffect(() => {
     checkAuth();
+    const currentTheme = localStorage.getItem("theme") ?? "light";
+    document.querySelector("html").setAttribute("data-theme", currentTheme);
+    localStorage.setItem("theme", currentTheme);
   }, [checkAuth]);
 
   if (isCheckingAuth && !authUser) {
@@ -36,6 +39,22 @@ export default function App() {
               index
               element={authUser ? <HomePage /> : <Navigate to="/login" />}
             />
+
+            <Route
+              path="/problem/:id"
+              element={!authUser ? <SignupPage /> : <ProblemPage />}
+            />
+            <Route
+              path="/profile"
+              element={!authUser ? <SignupPage /> : <ProfilePage />}
+            />
+
+            <Route element={<AdminRoute />}>
+              <Route
+                path="/add-problem"
+                element={authUser ? <AddProblem /> : <Navigate to="/" />}
+              />
+            </Route>
           </Route>
           <Route
             path="/login"
@@ -45,21 +64,6 @@ export default function App() {
             path="/signup"
             element={!authUser ? <SignupPage /> : <Navigate to="/" />}
           />
-          <Route
-            path="/problem/:id"
-            element={!authUser ? <SignupPage /> : <ProblemPage />}
-          />
-          <Route
-            path="/profile"
-            element={!authUser ? <SignupPage /> : <ProfilePage />}
-          />
-
-          <Route element={<AdminRoute />}>
-            <Route
-              path="/add-problem"
-              element={authUser ? <AddProblem /> : <Navigate to="/" />}
-            />
-          </Route>
         </Routes>
       </div>
     </>
